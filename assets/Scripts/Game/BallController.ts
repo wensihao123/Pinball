@@ -8,6 +8,7 @@ import {
   Node,
   Prefab,
   RigidBody2D,
+  tween,
   UITransform,
   Vec2,
   Vec3,
@@ -31,13 +32,11 @@ export class BallController extends Component {
   @property
   aimBallCount = 9;
   @property
-  tailBallCount = 9;
+  tailBallLifetime = 0.4;
 
   private touchStartPos: Vec2 = new Vec2();
   private touchEndPos: Vec2 = new Vec2();
   private aimBalls: Node[] = [];
-  private tailBalls: Node[] = [];
-  private pastBallPositions: Vec3[] = [];
   private recordTimeGap = 0.032;
   private recordTimer = 0;
 
@@ -48,13 +47,6 @@ export class BallController extends Component {
       aimBall.active = false;
       this.ballAimNode.addChild(aimBall);
       return aimBall;
-    });
-    this.tailBalls = Array.from({ length: this.tailBallCount }, (_, i) => {
-      const tailBall = instantiate(this.aimBallPrefab);
-      tailBall.active = false;
-      this.tailNode.addChild(tailBall);
-      tailBall.setScale(new Vec3(1 - 0.05 * i, 1 - 0.05 * i, 1));
-      return tailBall;
     });
     input.on(Input.EventType.TOUCH_START, this.onTouchStart, this);
     input.on(Input.EventType.TOUCH_MOVE, this.onTouchMove, this);
@@ -79,20 +71,17 @@ export class BallController extends Component {
       this.ballNode.active = false;
     }
     this.recordTimer += deltaTime;
-    if (this.recordTimer > this.recordTimeGap) {
-      if (this.pastBallPositions.length > this.tailBallCount) {
-        this.pastBallPositions.shift();
-      }
-      this.pastBallPositions.push(ballPosition);
-      this.recordTimer = 0;
+    if (this.recordTimer > this.recordTimeGap && this.ballNode.active) {
+        const tailBall = instantiate(this.aimBallPrefab);
+        this.tailNode.addChild(tailBall);
+        tailBall.setPosition(this.ballNode.getPosition());
+        tween(tailBall)
+            .to(this.tailBallLifetime, { scale: new Vec3(0, 0, 1) })
+            .call(() => {
+                tailBall.destroy();
+            })
+            .start();
     }
-    this.tailBalls.forEach((tailBall, i) => {
-      if (this.pastBallPositions.length > this.tailBallCount) {
-        tailBall.setPosition(
-          this.pastBallPositions[this.tailBallCount - i - 1]
-        );
-      }
-    });
   }
 
   protected onTouchStart(event: EventTouch): void {
@@ -131,9 +120,6 @@ export class BallController extends Component {
         aimBall.active = false;
       }, timeStep * i);
     });
-    this.tailBalls.forEach((tailBall, i) => {
-      tailBall.active = true;
-    });
     this.setBallVelocity();
   }
 
@@ -141,9 +127,7 @@ export class BallController extends Component {
     const swipeVector = this.touchEndPos.subtract(this.touchStartPos);
     if (swipeVector.length() < minSwipeDistance) {
       this.ballNode.active = false;
-      this.tailBalls.forEach((tailBall) => {
-        tailBall.active = false;
-      });
+      this.tailNode.removeAllChildren();
       return;
     }
     const velocity = swipeVector.normalize().multiplyScalar(this.ballSpeed);

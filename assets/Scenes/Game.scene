@@ -793,7 +793,7 @@
     },
     "ballSpeed": 25,
     "aimBallCount": 9,
-    "tailBallCount": 9,
+    "tailBallLifetime": 0.4,
     "_id": "14W/szFllDyZ59PQ1nZR7R"
   },
   {
