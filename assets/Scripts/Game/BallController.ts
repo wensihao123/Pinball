@@ -122,6 +122,9 @@ export class BallController extends Component {
   }
 
   protected onTouchMove(event: EventTouch): void {
+    if (!this.ballNode.active) {
+      return;
+    }
     const currentPos = event.getUILocation();
     const uiTransform = this.node.getComponent(UITransform);
     const localPos = uiTransform.convertToNodeSpaceAR(
@@ -134,6 +137,9 @@ export class BallController extends Component {
   }
 
   protected onTouchEnd(event: EventTouch): void {
+    if (!this.ballNode.active) {
+      return;
+    }
     this.touchEndPos = event.getUILocation();
     const aimVector = event.getUILocation().subtract(this.touchStartPos);
     const ballFlyTime =
