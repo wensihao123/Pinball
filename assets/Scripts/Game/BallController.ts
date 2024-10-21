@@ -1,7 +1,9 @@
 import {
   _decorator,
+  Collider2D,
   Component,
   EventTouch,
+  Game,
   input,
   Input,
   instantiate,
@@ -13,12 +15,18 @@ import {
   Vec2,
   Vec3,
 } from "cc";
+import {
+  DISABLE_BALL_CONTROLL,
+  MIN_SWIPE_DISTANCE,
+  OUT_OF_BOUNDS,
+} from "../Common/constants";
+import { GlobalState } from "../GlobalState";
 const { ccclass, property } = _decorator;
-
-const minSwipeDistance = 50;
 
 @ccclass("BallController")
 export class BallController extends Component {
+  private globalState: any = null;
+
   @property(Node)
   ballNode: Node = null;
   @property(Node)
@@ -40,7 +48,16 @@ export class BallController extends Component {
   private recordTimeGap = 0.032;
   private recordTimer = 0;
 
+  addEventListeners() {
+    this.globalState.addListener(
+      DISABLE_BALL_CONTROLL,
+      this.onDisableBallControll.bind(this)
+    );
+  }
+
   protected onLoad(): void {
+    this.globalState = GlobalState.getInstance();
+    this.addEventListeners();
     this.ballNode.active = false;
     this.aimBalls = Array.from({ length: this.aimBallCount }, (_, i) => {
       const aimBall = instantiate(this.aimBallPrefab);
@@ -48,12 +65,20 @@ export class BallController extends Component {
       this.ballAimNode.addChild(aimBall);
       return aimBall;
     });
+    this.enableTouch();
+  }
+
+  protected onDestroy(): void {
+    this.disableTouch();
+  }
+
+  enableTouch() {
     input.on(Input.EventType.TOUCH_START, this.onTouchStart, this);
     input.on(Input.EventType.TOUCH_MOVE, this.onTouchMove, this);
     input.on(Input.EventType.TOUCH_END, this.onTouchEnd, this);
   }
 
-  protected onDestroy(): void {
+  disableTouch() {
     input.off(Input.EventType.TOUCH_START, this.onTouchStart, this);
     input.off(Input.EventType.TOUCH_MOVE, this.onTouchMove, this);
     input.off(Input.EventType.TOUCH_END, this.onTouchEnd, this);
@@ -62,34 +87,34 @@ export class BallController extends Component {
   protected update(deltaTime: number) {
     const ballPosition = this.ballNode.getPosition();
     if (
-      ballPosition.y < -660 ||
-      ballPosition.y > 660 ||
-      ballPosition.x < -380 ||
-      ballPosition.x > 380
+      ballPosition.y < -670 ||
+      ballPosition.y > 670 ||
+      ballPosition.x < -390 ||
+      ballPosition.x > 390
     ) {
-      this.ballNode.getComponent(RigidBody2D).linearVelocity = new Vec2(0, 0);
-      this.ballNode.active = false;
+      this.globalState.outOfBounds();
     }
     this.recordTimer += deltaTime;
     if (this.recordTimer > this.recordTimeGap && this.ballNode.active) {
-        const tailBall = instantiate(this.aimBallPrefab);
-        this.tailNode.addChild(tailBall);
-        tailBall.setPosition(this.ballNode.getPosition());
-        tween(tailBall)
-            .to(this.tailBallLifetime, { scale: new Vec3(0, 0, 1) })
-            .call(() => {
-                tailBall.destroy();
-            })
-            .start();
+      const tailBall = instantiate(this.aimBallPrefab);
+      this.tailNode.addChild(tailBall);
+      tailBall.setPosition(this.ballNode.getPosition());
+      tween(tailBall)
+        .to(this.tailBallLifetime, { scale: new Vec3(0, 0, 1) })
+        .call(() => {
+          tailBall.destroy();
+        })
+        .start();
     }
   }
 
   protected onTouchStart(event: EventTouch): void {
     this.ballNode.active = false;
-    this.touchStartPos = event.getLocation();
+    this.ballNode.getComponent(Collider2D).enabled = false;
+    this.touchStartPos = event.getUILocation();
     const uiTransform = this.node.getComponent(UITransform);
     const localPos = uiTransform.convertToNodeSpaceAR(
-      new Vec3(event.getLocation().x, event.getLocation().y, 0)
+      new Vec3(event.getUILocation().x, event.getUILocation().y, 0)
     );
     this.ballNode.setPosition(localPos);
     this.ballNode.active = true;
@@ -97,7 +122,7 @@ export class BallController extends Component {
   }
 
   protected onTouchMove(event: EventTouch): void {
-    const currentPos = event.getLocation();
+    const currentPos = event.getUILocation();
     const uiTransform = this.node.getComponent(UITransform);
     const localPos = uiTransform.convertToNodeSpaceAR(
       new Vec3(currentPos.x, currentPos.y, 0)
@@ -109,8 +134,8 @@ export class BallController extends Component {
   }
 
   protected onTouchEnd(event: EventTouch): void {
-    this.touchEndPos = event.getLocation();
-    const aimVector = event.getLocation().subtract(this.touchStartPos);
+    this.touchEndPos = event.getUILocation();
+    const aimVector = event.getUILocation().subtract(this.touchStartPos);
     const ballFlyTime =
       aimVector.length() /
       aimVector.normalize().multiplyScalar(this.ballSpeed).length();
@@ -125,16 +150,18 @@ export class BallController extends Component {
 
   setBallVelocity(): void {
     const swipeVector = this.touchEndPos.subtract(this.touchStartPos);
-    if (swipeVector.length() < minSwipeDistance) {
+    if (swipeVector.length() < MIN_SWIPE_DISTANCE) {
       this.ballNode.active = false;
       this.tailNode.removeAllChildren();
       return;
     }
+    this.ballNode.getComponent(Collider2D).enabled = true;
     const velocity = swipeVector.normalize().multiplyScalar(this.ballSpeed);
     this.ballNode.getComponent(RigidBody2D).linearVelocity = new Vec2(
       velocity.x,
       velocity.y
     );
+    this.globalState.startTrial();
   }
 
   setAimLine(position: Vec3): void {
@@ -150,6 +177,21 @@ export class BallController extends Component {
           this.ballNode.getPosition().add(new Vec3(stepX * i, stepY * i, 0))
         );
       }, 0.1 - 0.01 * i);
+    }
+  }
+
+  resetBall(): void {
+    this.ballNode.setPosition(0, 0);
+    this.ballNode.getComponent(RigidBody2D).linearVelocity = new Vec2(0, 0);
+    this.ballNode.active = false;
+  }
+
+  onDisableBallControll(newVal): void {
+    if (newVal) {
+      this.disableTouch();
+    } else {
+      this.resetBall();
+      this.enableTouch();
     }
   }
 }

@@ -1,0 +1,40 @@
+{
+    "WhiteBlocks": [
+        {
+            "Prefab": "WhiteBlockRect",
+            "Scale": {
+                "x": 1,
+                "y": 6
+            },
+            "Position": {
+                "x": 0,
+                "y": 0,
+                "xOffset": -180,
+                "yOffset": 0
+            },
+            "Motion": {
+                "Type": "Rotate",
+                "Speed": 20,
+                "Direction": "Clockwise"
+            }
+        },
+        {
+            "Prefab": "WhiteBlockRect",
+            "Scale": {
+                "x": 1,
+                "y": 6
+            },
+            "Position": {
+                "x": 0,
+                "y": 0,
+                "xOffset": 180,
+                "yOffset": 0
+            },
+            "Motion": {
+                "Type": "Rotate",
+                "Speed": 20,
+                "Direction": "CounterClockwise"
+            }
+        }
+    ]
+}

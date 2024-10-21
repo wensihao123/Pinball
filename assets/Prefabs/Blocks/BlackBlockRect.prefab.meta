@@ -2,12 +2,12 @@
   "ver": "1.1.50",
   "importer": "prefab",
   "imported": true,
-  "uuid": "1c70f1a2-bc04-430b-9371-3edfc0ae530e",
+  "uuid": "36d27acc-0af7-45f8-94ec-bc5a446e14af",
   "files": [
     ".json"
   ],
   "subMetas": {},
   "userData": {
-    "syncNodeName": "BlockRect"
+    "syncNodeName": "BlackBlockRect"
   }
 }
