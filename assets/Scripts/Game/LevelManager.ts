@@ -1,7 +1,5 @@
 import {
   _decorator,
-  BoxCollider2D,
-  Collider2D,
   Component,
   instantiate,
   Node,
@@ -13,7 +11,7 @@ import {
 } from "cc";
 import { GameManager } from "../GameManager";
 import loadLevelConfig from "../Common/Helpers";
-import { Block, LevelConfig, BlockType } from "../Common/Types";
+import { Block, LevelConfig, BlockType, Position } from "../Common/Types";
 import {
   BLOCK_TYPE_BLACK,
   BLOCK_TYPE_WHITE,
@@ -34,15 +32,23 @@ export class LevelManager extends Component {
   BlackBlocks: Node = null;
 
   //Blocks
+  //White
   @property(Prefab)
   WhiteBlockRectPrefab: Prefab = null;
   @property(Prefab)
+  WhiteBlockCirclePrefab: Prefab = null;
+  @property(Prefab)
+  WhiteBlockStringPrefab: Prefab = null;
+  @property(Prefab)
+  WhiteBlockTriangleRPrefab: Prefab = null;
+  //Black
+  @property(Prefab)
   BlackBlockRectPrefab: Prefab = null;
+  @property(Prefab)
+  BlackBlockTriangleRPrefab: Prefab = null;
 
   private _levelConfig: LevelConfig = null;
-  private _gamePassed = false;
 
-  
   addEventListeners() {
     this.globalState.addListener(LOAD_LEVEL, this.onLoadLevel.bind(this));
     this.globalState.addListener(RESET_LEVEL, this.onResetLevel.bind(this));
@@ -140,6 +146,15 @@ export class LevelManager extends Component {
             );
           }, 0.2);
           break;
+        case MOTION_TYPES.PATROL:
+          this.scheduleOnce(() => {
+            this.addPatrol(
+              blockNode,
+              block.Motion.Speed,
+              block.Motion.AnchorPoints
+            );
+          }, 0.2);
+          break;
         default:
           break;
       }
@@ -147,10 +162,31 @@ export class LevelManager extends Component {
   }
 
   addRotation(node: Node, speed: number, clockwise: boolean) {
-    const time = 360 / speed;
     tween(node)
-      .by(time, { angle: clockwise ? -360 : 360 })
+      .by(speed, { angle: clockwise ? -360 : 360 })
       .repeatForever()
+      .start();
+  }
+
+  addPatrol(node: Node, speed: number, anchorPoints: Position[]) {
+    const containerWidth = this.WhiteBlocks.getComponent(UITransform).width;
+    const containerHeight = this.WhiteBlocks.getComponent(UITransform).height;
+    const points = anchorPoints.map((point) => {
+      return new Vec3(
+        point.x * containerWidth + point.xOffset,
+        point.y * containerHeight + point.yOffset,
+        0
+      );
+    });
+    points.push(node.getPosition());
+    let tweenPatrol = tween(node);
+    points.forEach((point) => {
+      tweenPatrol = tweenPatrol.to(speed, { position: point });
+    });
+    tweenPatrol
+      .call(() => {
+        this.addPatrol(node, speed, anchorPoints);
+      })
       .start();
   }
 }

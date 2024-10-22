@@ -1,16 +1,11 @@
-import {
-  _decorator,
-  Collider2D,
-  Component,
-  Contact2DType,
-  Node,
-} from "cc";
+import { _decorator, Collider2D, Component, Contact2DType, Node } from "cc";
 import { GlobalState } from "../GlobalState";
 import { AnimManager } from "../Effects/AnimManager";
+import { AudioManager } from "../Effects/AudioManager";
 const { ccclass, property } = _decorator;
 
-@ccclass("WhiteBlock")
-export class WhiteBlock extends Component {
+@ccclass("WhiteBlockRect")
+export class WhiteBlockRect extends Component {
   private _collider: Collider2D = null;
   protected onLoad(): void {
     this._collider = this.getComponent(Collider2D);
@@ -23,11 +18,16 @@ export class WhiteBlock extends Component {
 
   protected onDestroy(): void {
     if (this._collider) {
-      this._collider.off(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this);
+      this._collider.off(
+        Contact2DType.BEGIN_CONTACT,
+        this.onBeginContact,
+        this
+      );
     }
   }
 
   onBeginContact(selfCollider: Collider2D, otherCollider: Collider2D) {
+    AudioManager.getInstance().playWhiteBlockSound();
     this._collider.enabled = false;
     this.scheduleOnce(() => {
       this.node.active = false;

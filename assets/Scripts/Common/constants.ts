@@ -1,15 +1,17 @@
-export const MAX_LEVLES = 3;
+export const MAX_LEVLES = 6;
 
 export const MIN_SWIPE_DISTANCE = 50;
-export const MAX_TRIAL_TIME = 5;
+export const MAX_TRIAL_TIME = 10;
 export const RECT_UNIT_SIZE = 40;
+export const STRING_X_SIZE = 6;
+export const STRING_Y_SIZE = 60;
 
 export const PLAYER = "Player";
 export const CLOCK_WISE = "Clockwise";
 
 export const MOTION_TYPES = {
   ROTATE: "Rotate",
-  TRANSLATE: "Translate",
+  PATROL: "Patrol",
 };
 
 //Global States
@@ -27,3 +29,8 @@ export const BLOCK_TYPE_BLACK = "Black";
 export const CLEAR_TIMER = "clearTimer";
 export const RESET_LEVEL = "resetLevel";
 export const LOAD_LEVEL = "loadLevel";
+
+//Animations
+export const STRING_FADE_ANIMATION = "WhiteBlockStringFade";
+
+//Audio Clips

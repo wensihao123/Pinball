@@ -288,6 +288,18 @@
       "__uuid__": "91e8e24f-c2ff-4d6d-8d48-69a388bc8f87",
       "__expectedType__": "cc.Prefab"
     },
+    "CircleFramePrefab": {
+      "__uuid__": "04aa4bfc-a961-47cc-b3ec-d083b0890c48",
+      "__expectedType__": "cc.Prefab"
+    },
+    "StringFramePrefab": {
+      "__uuid__": "35dc125d-048e-467d-b9dc-881e82a0d2b9",
+      "__expectedType__": "cc.Prefab"
+    },
+    "TriangleFramePrefab": {
+      "__uuid__": "6415788c-2529-45c7-84f6-353846e07ab2",
+      "__expectedType__": "cc.Prefab"
+    },
     "AnimBlocks": {
       "__id__": 8
     },
@@ -450,8 +462,24 @@
       "__uuid__": "1c70f1a2-bc04-430b-9371-3edfc0ae530e",
       "__expectedType__": "cc.Prefab"
     },
+    "WhiteBlockCirclePrefab": {
+      "__uuid__": "2562aa3b-d0a9-4260-81e4-54c456608962",
+      "__expectedType__": "cc.Prefab"
+    },
+    "WhiteBlockStringPrefab": {
+      "__uuid__": "91246204-22c6-462d-bea5-8513bf358d3b",
+      "__expectedType__": "cc.Prefab"
+    },
+    "WhiteBlockTriangleRPrefab": {
+      "__uuid__": "4ee964df-fbef-439a-b7d4-a4fc785d5f9a",
+      "__expectedType__": "cc.Prefab"
+    },
     "BlackBlockRectPrefab": {
       "__uuid__": "36d27acc-0af7-45f8-94ec-bc5a446e14af",
+      "__expectedType__": "cc.Prefab"
+    },
+    "BlackBlockTriangleRPrefab": {
+      "__uuid__": "e891d367-3de8-4e24-b3aa-3dd3821fe356",
       "__expectedType__": "cc.Prefab"
     },
     "_id": "f07yjcBZlAuYld40gee/Xc"

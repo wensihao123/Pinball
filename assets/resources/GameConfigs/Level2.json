@@ -27,7 +27,7 @@
             }
         },
         {
-            "Prefab": "WhiteBlockRect",
+            "Prefab": "WhiteBlockCircle",
             "Scale": {
                 "x": 4,
                 "y": 4

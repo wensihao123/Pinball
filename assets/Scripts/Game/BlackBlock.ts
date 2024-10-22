@@ -9,6 +9,7 @@ import {
   tween,
   Vec3,
 } from "cc";
+import { AudioManager } from "../Effects/AudioManager";
 const { ccclass, property } = _decorator;
 
 @ccclass("BlackBlock")
@@ -34,6 +35,7 @@ export class BlackBlock extends Component {
   }
 
   onBeginContact() {
+    AudioManager.getInstance().playBlackBlockHit();
     const currentScale = this.node.getScale();
     tween(this.node)
       .to(0.07, {

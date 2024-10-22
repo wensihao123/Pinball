@@ -12,6 +12,7 @@ import {
   RESET_LEVEL,
 } from "./Common/constants";
 import { GameManager } from "./GameManager";
+import { AudioManager } from "./Effects/AudioManager";
 const { ccclass, property } = _decorator;
 
 const InitState = {
@@ -145,6 +146,7 @@ export class GlobalState extends Component {
       this.eventTarget.emit(CLEAR_TIMER);
       this.timerInterval = null;
     }
+    AudioManager.getInstance().resetCounts();
     this.checkCompleteLevel();
   }
 }

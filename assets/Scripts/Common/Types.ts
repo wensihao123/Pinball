@@ -2,12 +2,7 @@ import { BLOCK_TYPE_WHITE, BLOCK_TYPE_BLACK } from "./constants";
 
 export type Block = {
   Prefab: string;
-  Position: {
-    x: number;
-    y: number;
-    xOffset: number;
-    yOffset: number;
-  };
+  Position: Position;
   Scale: {
     x: number;
     y: number;
@@ -18,9 +13,17 @@ export type Block = {
   Motion?: {
     Type: string;
     Speed: number;
-    Direction: string;
+    Direction?: string;
+    AnchorPoints?: Position[];
   };
 };
+
+export type Position = {
+  x: number;
+  y: number;
+  xOffset: number;
+  yOffset: number;
+}
 
 export type LevelConfig = {
   WhiteBlocks: Block[];

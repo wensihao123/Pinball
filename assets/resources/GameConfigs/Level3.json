@@ -14,7 +14,7 @@
             },
             "Motion": {
                 "Type": "Rotate",
-                "Speed": 20,
+                "Speed": 10,
                 "Direction": "Clockwise"
             }
         },
@@ -32,7 +32,7 @@
             },
             "Motion": {
                 "Type": "Rotate",
-                "Speed": 20,
+                "Speed": 10,
                 "Direction": "CounterClockwise"
             }
         }

@@ -3,19 +3,14 @@
         {
             "Prefab": "WhiteBlockRect",
             "Scale": {
-                "x": 1,
-                "y": 6
+                "x": 3,
+                "y": 3
             },
             "Position": {
                 "x": 0,
                 "y": 0,
-                "xOffset": -180,
+                "xOffset": -200,
                 "yOffset": 0
-            },
-            "Motion": {
-                "Type": "Rotate",
-                "Speed": 20,
-                "Direction": "Clockwise"
             }
         },
         {
@@ -32,13 +27,13 @@
             },
             "Motion": {
                 "Type": "Patrol",
-                "Speed": 20,
+                "Speed": 3,
                 "AnchorPoints": [
                     {
                         "x": 0,
                         "y": 0,
                         "xOffset": 180,
-                        "yOffset": 300
+                        "yOffset": 200
                     }
                 ]
             }
@@ -53,9 +48,9 @@
             },
             "Position": {
                 "x": 0,
-                "y": 0.3,
-                "xOffset": -120,
-                "yOffset": 0
+                "y": 0,
+                "xOffset": 0,
+                "yOffset": -160
             }
         },
         {
@@ -66,35 +61,9 @@
             },
             "Position": {
                 "x": 0,
-                "y": 0.3,
-                "xOffset": 120,
-                "yOffset": 0
-            }
-        },
-        {
-            "Prefab": "BlackBlockRect",
-            "Scale": {
-                "x": 6,
-                "y": 1
-            },
-            "Position": {
-                "x": 0,
-                "y": 0.3,
+                "y": 0,
                 "xOffset": 0,
-                "yOffset": -120
-            }
-        },
-        {
-            "Prefab": "BlackBlockRect",
-            "Scale": {
-                "x": 6,
-                "y": 1
-            },
-            "Position": {
-                "x": 0,
-                "y": 0.3,
-                "xOffset": 0,
-                "yOffset": 120
+                "yOffset": 160
             }
         }
     ]
