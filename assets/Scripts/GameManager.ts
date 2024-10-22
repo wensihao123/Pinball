@@ -1,5 +1,6 @@
 import { _decorator, Component, director, Node } from "cc";
 import { MAX_LEVLES } from "./Common/constants";
+import { AudioManager } from "./Effects/AudioManager";
 const { ccclass, property } = _decorator;
 
 @ccclass("GameManager")
@@ -27,6 +28,7 @@ export class GameManager extends Component {
 
   onClickStart() {
     console.log("Start Game");
+    AudioManager.getInstance().play('d');
     director.loadScene("Game");
   }
 
